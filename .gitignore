@@ -1,0 +1,16 @@
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Test artifacts
+/tmp/
+
+# KB instances (these live in consumer projects, not this repo)
+/kb/
+
+# Script output
+*.log
