@@ -1,6 +1,6 @@
 ---
 name: kb-write
-description: "Write access to a Knowledge Protocol knowledge base. Update and create notes. Principle: Integrate, don't dump."
+description: "Write access to a Second Brain knowledge base. Update and create notes. Principle: Integrate, don't dump."
 triggers:
   - save knowledge
   - update the knowledge base
@@ -8,7 +8,7 @@ triggers:
   - add a note
 ---
 
-# Knowledge Base — Write
+# Second Brain — Write
 
 ## Core principle
 

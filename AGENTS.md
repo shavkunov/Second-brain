@@ -4,28 +4,30 @@ Authoritative project doc. Any agent opening this repo should read this file alo
 
 ## What this repo is
 
-**Knowledge Protocol** is a framework-agnostic knowledge base structure and two agent skills (`kb-read` + `kb-write`) that give AI agents a consistent way to store, navigate, and maintain project knowledge across sessions.
+**Second Brain** is a framework-agnostic knowledge base structure and two agent skills (`kb-read` + `kb-write`) that give AI agents a consistent way to store, navigate, and maintain project knowledge across sessions.
 
 - Two skills: read-only (`kb-read`) and write (`kb-write`)
 - One init script: `scripts/init-kb.sh` scaffolds a `kb/` directory in any project
 - Zero runtime dependencies: pure markdown + bash
-- Works with: Hermes Agent (native SKILL.md format), Claude Code (manual skill copy), Codex (manual skill copy), any agent that reads markdown
+- Works with: Hermes Agent, Claude Code, Codex or any agent that reads markdown
 
 ## Repo layout
 
 ```
-knowledge-protocol/
-├── README.md                   Public-facing: what it is, install, use, Mermaid diagrams
+second-brain/
+├── README.md                   Public-facing: short overview, one Mermaid diagram, quick start
+├── docs/
+│   └── protocol.md             Extended protocol: update matrix, lifecycle, principles
 ├── AGENTS.md                   This file. Authoritative project doc.
 ├── CHANGELOG.md                Per-version release notes. Keep-a-Changelog format.
 ├── LICENSE                     MIT.
 ├── skills/
 │   ├── kb-read/                Read skill
-│   │   ├── SKILL.md            Skill definition (~60 lines)
+│   │   ├── SKILL.md            Skill definition
 │   │   └── references/
 │   │       └── read-workflow.md  Deep dive: navigation order, fallback strategies
 │   └── kb-write/               Write skill
-│       ├── SKILL.md            Skill definition (~120 lines)
+│       ├── SKILL.md            Skill definition
 │       ├── references/
 │       │   ├── update-rules.md   When and how to update each file
 │       │   └── pitfalls.md       Common mistakes in KB maintenance
@@ -38,14 +40,15 @@ knowledge-protocol/
 │           ├── history.md
 │           └── links.md
 ├── scripts/
-│   └── init-kb.sh             Scaffold a kb/ directory in any project
+│   ├── init-kb.sh             Scaffold a kb/ directory in any project
+│   └── install-skills.sh      Copy kb-read + kb-write to an agent skills directory
 └── tests/
     └── init-kb.test.sh        Verify init-kb.sh creates correct structure
 ```
 
 ## What ships vs what doesn't
 
-- **Ships to consumers**: everything under `skills/` + `scripts/init-kb.sh`
+- **Ships to consumers**: everything under `skills/` + `scripts/init-kb.sh` + `scripts/install-skills.sh`
 - **Repo-only**: `README.md`, `CHANGELOG.md`, `LICENSE`, `AGENTS.md`, `tests/`
 
 ## How the skills work
@@ -60,7 +63,7 @@ When invoked after a task, the agent determines what changed and updates **all r
 
 ## The KB structure (the core product)
 
-Every project using Knowledge Protocol gets a `kb/` directory:
+Every project using Second Brain gets a `kb/` directory:
 
 ```
 kb/
@@ -132,9 +135,3 @@ No version bump needed for script-only fixes. Just commit + push.
 - **Stale KB is worse than no KB.** An outdated `current.md` actively misleads. When code and docs diverge, update docs immediately.
 - **`map.md` must be exhaustive.** Any file not in `map.md` is effectively invisible.
 - **Implementation notes ≠ KB.** Chronological work logs belong in the repo root (`implementation_notes.md`), not in `kb/`. KB = what's known. Notes = what was done.
-
-## Working state (v0.1.0 — 2026-06-16)
-
-- Initial release: two skills + init script + templates
-- Tested: init-kb.sh creates correct structure on Linux/macOS/WSL
-- Pending: integration testing with live Hermes Agent sessions

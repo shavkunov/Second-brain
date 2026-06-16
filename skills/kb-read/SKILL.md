@@ -1,6 +1,6 @@
 ---
 name: kb-read
-description: "Read-only access to a Knowledge Protocol knowledge base. Start with map.md → current.md → technical.md → history/. Never invent facts. Skills do NOT replace the KB."
+description: "Read-only access to a Second Brain knowledge base. Start with map.md → current.md → technical.md → history/. Never invent facts. Skills do NOT replace the KB."
 triggers:
   - read the knowledge base
   - find information about the project
@@ -9,7 +9,7 @@ triggers:
   - how does X work
 ---
 
-# Knowledge Base — Read
+# Second Brain — Read
 
 ## When to use
 

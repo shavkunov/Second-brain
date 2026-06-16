@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# init-kb.sh — Scaffold a Knowledge Protocol knowledge base in any project.
+# init-kb.sh — Scaffold a Second Brain knowledge base in any project.
 #
 # Usage:
 #   bash init-kb.sh /path/to/project [--name "Project Name"]
@@ -65,7 +65,7 @@ fi
 KB_DIR="$PROJECT_DIR/kb"
 PROJECT_KB="$KB_DIR/$SLUG"
 
-echo "Initializing Knowledge Protocol in: $KB_DIR"
+echo "Initializing Second Brain in: $KB_DIR"
 echo "Project: $PROJECT_NAME (slug: $SLUG)"
 
 # Create directories
@@ -100,7 +100,7 @@ done
 cat > "$KB_DIR/README.md" << EOF
 # Knowledge Base — $PROJECT_NAME
 
-Structured knowledge following the [Knowledge Protocol](https://github.com/shavkunov/knowledge-protocol).
+Structured knowledge following [Second Brain](https://github.com/shavkunov/second-brain).
 
 ## Structure
 

@@ -5,10 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Renamed project from Knowledge Protocol to **Second Brain** (`second-brain`).
+- Shortened README: one Mermaid diagram, quick start, links to detailed docs.
+- Moved update matrix, lifecycle, and principles to `docs/protocol.md`.
+- Added `scripts/install-skills.sh` for Hermes, Claude Code, and Codex CLI.
+
 ## [0.1.0] — 2026-06-16
 
 ### Added
-- Initial release of Knowledge Protocol.
+- Initial release (as Knowledge Protocol; renamed to Second Brain in Unreleased).
 - `kb-read` skill: read-only access to knowledge bases with structured navigation workflow.
 - `kb-write` skill: write access with "Integrate, don't dump" principle and multi-file update rules.
 - `init-kb.sh` script: scaffold a `kb/` directory in any project.
