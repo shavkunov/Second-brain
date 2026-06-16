@@ -1,138 +1,237 @@
-# Knowledge Protocol
+<div align="center">
 
-A structured knowledge base protocol for AI agents. Define once, use everywhere.
+# 🧠 Knowledge Protocol
 
-## The problem
+**A structured knowledge base protocol for AI agents.**  
+Define once, use everywhere.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](CHANGELOG.md)
+
+</div>
+
+---
 
 AI agents working on real projects accumulate knowledge — architectural decisions, API contracts, debugging lessons, operational runbooks. Without a protocol, this knowledge either:
 
-- **Lives in chat history** — lost between sessions
-- **Gets dumped into a single file** — grows into an unreadable wall of text
-- **Scatters across ad-hoc notes** — nobody can find anything twice
+- 💬 **Lives in chat history** — lost between sessions
+- 📄 **Gets dumped into a single file** — grows into an unreadable wall of text
+- 📂 **Scatters across ad-hoc notes** — nobody can find anything twice
 
-Knowledge Protocol gives agents a consistent, navigable structure that stays useful as projects grow.
+Knowledge Protocol gives agents a consistent, navigable structure that stays useful as projects grow. No framework lock-in. No runtime dependencies. Pure markdown.
 
-## How it works
-
-```mermaid
-flowchart TD
-    START(["Agent starts a task"]) --> MAP["Read map.md<br/>(navigation index)"]
-    MAP --> PROJECT{"Which project?"}
-    PROJECT --> CURRENT["Read current.md<br/>(what's true now)"]
-    CURRENT --> NEED{"What do you need?"}
-    NEED -->|"How it works"| TECH["technical.md"]
-    NEED -->|"How to run"| RUN["runbook.md"]
-    NEED -->|"Why this way"| DEC["decisions.md"]
-    NEED -->|"What changed"| HIST["history.md"]
-    NEED -->|"What depends on what"| LINKS["links.md"]
-
-    TASK_DONE["Task completed"] --> UPDATE{"What changed?"}
-    UPDATE -->|"New fact"| W_CURRENT["Update current.md"]
-    UPDATE -->|"Architecture shifted"| W_TECH["Update technical.md"]
-    UPDATE -->|"Decision made"| W_DEC["Update decisions.md"]
-    UPDATE -->|"Old approach replaced"| W_HIST["Move old → history.md<br/>Write new → current.md"]
-    UPDATE -->|"New operational command"| W_RUN["Update runbook.md"]
-    W_CURRENT & W_TECH & W_DEC & W_HIST & W_RUN --> MAP_UPDATE["Update map.md<br/>if new files added"]
-
-    classDef read fill:#dbeafe,stroke:#2563eb,color:#000
-    classDef write fill:#fef3c7,stroke:#d97706,color:#000
-    class MAP,CURRENT,TECH,RUN,DEC,HIST,LINKS read
-    class W_CURRENT,W_TECH,W_DEC,W_HIST,W_RUN,MAP_UPDATE write
-```
-
-Blue = read path. Yellow = write path. Every piece of knowledge lands in the right file, and every file is reachable from `map.md`.
+---
 
 ## The 6-file structure
 
-Each project (or component) gets a folder with exactly 6 files:
+Every project gets a folder with exactly **6 files** — each with a single job:
 
-| File | Purpose | When to read |
-|------|---------|-------------|
-| `current.md` | What's true right now — short, actionable | Quick recall of key facts |
+```
+kb/
+├── map.md              ← 📍 START HERE — navigation index
+├── README.md
+└── your-project/
+    ├── current.md      ← What's true right now
+    ├── technical.md    ← How it works
+    ├── runbook.md      ← How to run it
+    ├── decisions.md    ← Why it's this way
+    ├── history.md      ← What used to be true
+    └── links.md        ← What depends on what
+```
+
+| File | One-line purpose | When to read |
+|------|-----------------|-------------|
+| `current.md` | What's true right now | Quick recall of key facts |
 | `technical.md` | How it works — architecture, API, models | Understanding internals |
 | `runbook.md` | How to run it — commands, env vars, ports | Starting or developing |
 | `decisions.md` | Why it's this way — tradeoffs, alternatives | Understanding rationale |
 | `history.md` | What used to be true — old approaches, dead ends | Avoiding repeated mistakes |
 | `links.md` | What depends on what — cross-project connections | Understanding impact |
 
-A `map.md` at the root ties everything together with a navigation index.
+---
 
-## The core principle
+## How it works
 
-**Integrate, don't dump.**
+```mermaid
+flowchart LR
+    subgraph READ["📖 Read Path"]
+        direction TB
+        R1["map.md<br/><i>navigate</i>"] --> R2["current.md<br/><i>what's true</i>"]
+        R2 --> R3{"Need more?"}
+        R3 -->|how it works| R4["technical.md"]
+        R3 -->|how to run| R5["runbook.md"]
+        R3 -->|why this way| R6["decisions.md"]
+        R3 -->|what changed| R7["history.md"]
+        R3 -->|what depends| R8["links.md"]
+    end
 
-Every note must be reachable through `map.md`. Every update must touch all relevant files (not just one). Stale knowledge is worse than missing knowledge — it actively misleads.
+    subgraph WRITE["✏️ Write Path"]
+        direction TB
+        W1["Task completed"] --> W2{"What changed?"}
+        W2 -->|new fact| W3["current.md"]
+        W2 -->|architecture| W4["technical.md"]
+        W2 -->|decision| W5["decisions.md"]
+        W2 -->|old approach| W6["history.md"]
+        W2 -->|new command| W7["runbook.md"]
+        W3 & W4 & W5 & W6 & W7 --> W8["map.md<br/><i>if new files</i>"]
+    end
 
-## Install
-
-### For any agent framework (manual)
-
-```bash
-# Clone the repo
-git clone https://github.com/<you>/knowledge-protocol /tmp/kp-clone
-
-# Initialize a knowledge base in your project
-bash /tmp/kp-clone/scripts/init-kb.sh /path/to/your/project
-
-# Or copy skills manually
-cp -R /tmp/kp-clone/skills/kb-read ~/.hermes/skills/
-cp -R /tmp/kp-clone/skills/kb-write ~/.hermes/skills/
+    READ ~~~ WRITE
 ```
 
-### Initialize a knowledge base
+Read left → right. The **read path** starts at `map.md` and drills down progressively. The **write path** fans out — one event touches multiple files, then converges back to `map.md`.
+
+---
+
+## The update matrix
+
+This is the core insight: **one event → multiple files**. A bug fix isn't just a `current.md` entry.
+
+```mermaid
+flowchart TD
+    EVENT["🔧 Bug found & fixed"]
+
+    EVENT --> C["current.md<br/>+ status, fix summary"]
+    EVENT --> T["technical.md<br/>+ root cause detail"]
+    EVENT --> D["decisions.md<br/>+ why this fix"]
+    EVENT --> H["history.md<br/>+ chronology of the bug"]
+    EVENT --> R["runbook.md<br/>+ new diagnostic command"]
+
+    C & T & D & H & R --> DONE["✅ All files consistent"]
+
+    style EVENT fill:#fef3c7,stroke:#d97706,color:#000
+    style DONE fill:#d1fae5,stroke:#059669,color:#000
+```
+
+| What happened | current | technical | decisions | history | runbook |
+|---|---|---|---|---|---|
+| Bug found & fixed | + status, fix | + root cause | + why this fix | + chronology | + diagnostic cmd |
+| Architecture changed | + new structure | + updated diagram | + why change | + old architecture | — |
+| New module added | + module exists | + API | — | — | + how to run |
+| Decision reversed | + new direction | + implications | + new + old rationale | + old decision | — |
+| Operational incident | + status note | — | — | + incident report | + new procedure |
+
+Updating only `current.md` is the #1 mistake. A future session reading `technical.md` still sees the old facts. The KB becomes self-contradictory.
+
+---
+
+## The lifecycle of knowledge
+
+```mermaid
+flowchart LR
+    NEW["🆕 New knowledge<br/>discovered"] --> CURRENT["current.md<br/><i>what's true now</i>"]
+    CURRENT -->|"fact becomes<br/>obsolete"| ARCHIVE["history.md<br/><i>what used to be true</i>"]
+    ARCHIVE -->|"lesson still<br/>relevant"| CURRENT
+
+    NEW -->|"technical<br/>detail"| TECH["technical.md"]
+    NEW -->|"operational<br/>command"| RUN["runbook.md"]
+    NEW -->|"deliberate<br/>choice"| DEC["decisions.md"]
+
+    style NEW fill:#dbeafe,stroke:#2563eb,color:#000
+    style CURRENT fill:#d1fae5,stroke:#059669,color:#000
+    style ARCHIVE fill:#fef3c7,stroke:#d97706,color:#000
+```
+
+Knowledge flows from discovery → `current.md` → `history.md` as it becomes obsolete. But lessons from history can loop back — a past incident that resurfaces gets re-promoted to `current.md`.
+
+**Key rule:** before overwriting `current.md`, move the old fact to `history.md`. Never delete without archiving.
+
+---
+
+## The five principles
+
+### 1. Current ≠ Historical
+
+`current.md` contains only what's true **right now**. When facts change, the old version moves to `history.md` before the new one is written. This eliminates the "is this still true?" problem.
+
+### 2. One update touches all relevant files
+
+A bug fix is 4–5 file updates, not 1. See the update matrix above. Partial updates create inconsistency — the worst state for a knowledge base.
+
+### 3. Stale knowledge is worse than missing knowledge
+
+An outdated `current.md` actively misleads. A missing `current.md` is honestly empty. When you spot drift between code and docs, fix the docs immediately.
+
+### 4. Map is the entry point
+
+Every file must be reachable from `map.md`. An orphan file is a lost file — no session will find it.
+
+### 5. Knowledge ≠ chronicle
+
+`implementation_notes.md` (chronological work log) lives in the repo root, not in the KB. KB = what's known and why. Notes = what was done and when.
+
+---
+
+## Quick start
+
+### Initialize a knowledge base in your project
 
 ```bash
-# Creates the kb/ directory structure inside your project
-bash scripts/init-kb.sh /path/to/project [--name "My Project"]
+bash scripts/init-kb.sh /path/to/your/project --name "My Project"
 ```
 
 This creates:
+
 ```
 your-project/
 └── kb/
-    ├── map.md
-    ├── README.md
-    └── _project_name/        # your project's section
-        ├── current.md
-        ├── technical.md
-        runbook.md
-        ├── decisions.md
-        ├── history.md
-        └── links.md
+    ├── map.md                  ← navigation index
+    ├── README.md               ← how this KB is organized
+    └── my-project/
+        ├── current.md          ← fill in current facts
+        ├── technical.md        ← fill in architecture
+        ├── runbook.md          ← fill in startup commands
+        ├── decisions.md        ← fill in as decisions are made
+        ├── history.md          ← grows over time
+        └── links.md            ← fill in dependencies
 ```
 
-## Use with Hermes Agent
+### Install skills for Hermes Agent
 
-The two skills (`kb-read` and `kb-write`) are designed for [Hermes Agent](https://github.com/nousresearch/hermes-agent) but work with any agent that supports SKILL.md-format skills.
+```bash
+git clone https://github.com/shavkunov/knowledge-protocol /tmp/kp-clone
+cp -R /tmp/kp-clone/skills/kb-read ~/.hermes/skills/
+cp -R /tmp/kp-clone/skills/kb-write ~/.hermes/skills/
+rm -rf /tmp/kp-clone
+```
 
-### kb-read
+### Install for Claude Code
 
-Loaded automatically when the agent needs context from the knowledge base. Defines the read workflow: `map.md` → project folder → specific file.
+```bash
+mkdir -p ~/.claude/skills
+git clone https://github.com/shavkunov/knowledge-protocol /tmp/kp-clone
+cp -R /tmp/kp-clone/skills/kb-read ~/.claude/skills/
+cp -R /tmp/kp-clone/skills/kb-write ~/.claude/skills/
+rm -rf /tmp/kp-clone
+```
 
-### kb-write
+### Install for Codex CLI
 
-Loaded when the agent completes a task and needs to update the knowledge base. Enforces "integrate, don't dump" — updates must touch all relevant files, not just the obvious one.
+```bash
+mkdir -p ~/.codex/skills
+git clone https://github.com/shavkunov/knowledge-protocol /tmp/kp-clone
+cp -R /tmp/kp-clone/skills/kb-read ~/.codex/skills/
+cp -R /tmp/kp-clone/skills/kb-write ~/.codex/skills/
+rm -rf /tmp/kp-clone
+```
 
-## Repo layout
+---
+
+## What's in the box
 
 ```
 knowledge-protocol/
-├── README.md                   This file
-├── AGENTS.md                   Authoritative project doc for AI agents
-├── CHANGELOG.md                Per-version release notes
-├── LICENSE                     MIT
 ├── skills/
-│   ├── kb-read/                Read skill for Hermes Agent
-│   │   ├── SKILL.md            Skill definition
-│   │   ├── references/         Deep-dive docs the agent reads on demand
-│   │   │   └── read-workflow.md
-│   │   └── templates/          (none — read skill doesn't write)
-│   └── kb-write/               Write skill for Hermes Agent
-│       ├── SKILL.md            Skill definition
-│       ├── references/         Deep-dive docs
-│       │   ├── update-rules.md   When and how to update each file
-│       │   └── pitfalls.md       Common mistakes in KB maintenance
-│       └── templates/          Starter templates
+│   ├── kb-read/                  Read skill
+│   │   ├── SKILL.md              Skill definition
+│   │   └── references/
+│   │       └── read-workflow.md    Navigation strategies & fallbacks
+│   └── kb-write/                 Write skill
+│       ├── SKILL.md              Skill definition
+│       ├── references/
+│       │   ├── update-rules.md     When & how to update each file
+│       │   └── pitfalls.md         9 common KB maintenance mistakes
+│       └── templates/            Starter templates
 │           ├── map.md
 │           ├── current.md
 │           ├── technical.md
@@ -141,23 +240,34 @@ knowledge-protocol/
 │           ├── history.md
 │           └── links.md
 ├── scripts/
-│   └── init-kb.sh             Scaffold a KB in any project
-└── tests/
-    └── init-kb.test.sh        Verify init-kb.sh output
+│   └── init-kb.sh                Scaffold a KB in any project
+├── tests/
+│   └── init-kb.test.sh           Verify init-kb.sh output (7 assertions)
+├── AGENTS.md                     Authoritative project doc for AI agents
+├── CHANGELOG.md                  Per-version release notes
+└── LICENSE                       MIT
 ```
 
-## Philosophy
+---
 
-1. **Current ≠ historical.** `current.md` contains only what's true now. When facts change, the old version moves to `history.md` before the new one is written. This prevents the "is this still true?" problem.
+## Common mistakes
 
-2. **One update touches all relevant files.** A bug fix isn't just a `current.md` entry — it's also a `decisions.md` note (why this fix), a `history.md` entry (what was broken), and possibly a `runbook.md` addition (new operational command).
+| # | Mistake | Why it hurts | Fix |
+|---|---------|-------------|-----|
+| 1 | Updating only `current.md` | Other files become stale, KB self-contradicts | Update all affected files |
+| 2 | Overwriting without archiving | No record of when/why things changed | Move old → `history.md` first |
+| 3 | Letting the KB go stale | Outdated KB is worse than no KB | Fix drift on sight |
+| 4 | Creating orphan files | Invisible to navigation, never found again | Always update `map.md` |
+| 5 | Duplicating instead of referencing | Same fact in 3 files = 3 updates when it changes | One canonical home per fact |
+| 6 | Mixing work logs with knowledge | `current.md` becomes a timeline, not a reference | Work logs → `implementation_notes.md` |
+| 7 | Writing essays instead of bullets | `current.md` becomes unscannable | 1–2 lines per bullet, detail → other files |
+| 8 | Skipping KB update after review | Next session starts with stale context | Update `technical.md` + `current.md` |
+| 9 | Treating `history.md` as trash | Unstructured dump nobody can search | Self-contained entries with date + lesson |
 
-3. **Stale knowledge is worse than missing knowledge.** An outdated `current.md` actively misleads future sessions. When you spot drift between code and docs, update the docs immediately — don't schedule it.
+Full details in [`skills/kb-write/references/pitfalls.md`](skills/kb-write/references/pitfalls.md).
 
-4. **Map is the entry point.** Every file must be reachable from `map.md`. An orphan file is a lost file.
-
-5. **Implementation notes are separate from knowledge.** `implementation_notes.md` (chronological work log) lives in the repo root, not in the KB. KB = what's known and why. Notes = what was done and when.
+---
 
 ## License
 
-MIT
+[MIT](LICENSE) — use it, fork it, adapt it.
