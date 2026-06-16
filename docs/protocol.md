@@ -6,22 +6,6 @@ Extended reference. The [README](../README.md) is the quick overview; skills and
 
 **One event → multiple files.** A bug fix is not just a `current.md` entry.
 
-```mermaid
-flowchart TD
-    EVENT["Bug found & fixed"]
-
-    EVENT --> C["current.md<br/>+ status, fix summary"]
-    EVENT --> T["technical.md<br/>+ root cause detail"]
-    EVENT --> D["decisions.md<br/>+ why this fix"]
-    EVENT --> H["history.md<br/>+ chronology of the bug"]
-    EVENT --> R["runbook.md<br/>+ new diagnostic command"]
-
-    C & T & D & H & R --> DONE["All files consistent"]
-
-    style EVENT fill:#fef3c7,stroke:#d97706,color:#000
-    style DONE fill:#d1fae5,stroke:#059669,color:#000
-```
-
 | What happened | current | technical | decisions | history | runbook |
 |---|---|---|---|---|---|
 | Bug found & fixed | + status, fix | + root cause | + why this fix | + chronology | + diagnostic cmd |
@@ -35,21 +19,6 @@ Full per-event rules: [`skills/kb-write/references/update-rules.md`](../skills/k
 Updating only `current.md` is the #1 mistake — other files go stale and the KB contradicts itself.
 
 ## Knowledge lifecycle
-
-```mermaid
-flowchart LR
-    NEW["New knowledge<br/>discovered"] --> CURRENT["current.md<br/><i>what's true now</i>"]
-    CURRENT -->|"fact becomes<br/>obsolete"| ARCHIVE["history.md<br/><i>what used to be true</i>"]
-    ARCHIVE -->|"lesson still<br/>relevant"| CURRENT
-
-    NEW -->|"technical<br/>detail"| TECH["technical.md"]
-    NEW -->|"operational<br/>command"| RUN["runbook.md"]
-    NEW -->|"deliberate<br/>choice"| DEC["decisions.md"]
-
-    style NEW fill:#dbeafe,stroke:#2563eb,color:#000
-    style CURRENT fill:#d1fae5,stroke:#059669,color:#000
-    style ARCHIVE fill:#fef3c7,stroke:#d97706,color:#000
-```
 
 Before overwriting `current.md`, move the old fact to `history.md`. Never delete without archiving.
 
