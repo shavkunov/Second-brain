@@ -48,15 +48,17 @@ flowchart LR
     style T fill:#e0e7ff,stroke:#4f46e5,color:#000
     style R fill:#e0e7ff,stroke:#4f46e5,color:#000
     style D fill:#e0e7ff,stroke:#4f46e5,color:#000
-    style H fill:#fef3c7,stroke:#d97706,color:#000
-    style L fill:#fef3c7,stroke:#d97706,color:#000
-    style E fill:#fef3c7,stroke:#d97706,color:#000
+    style H fill:#ffffff,stroke:#d97706,color:#000
+    style L fill:#ffffff,stroke:#d97706,color:#000
+    style E fill:#ffffff,stroke:#d97706,color:#000
     style C2 fill:#d1fae5,stroke:#059669,color:#000
     style T2 fill:#e0e7ff,stroke:#4f46e5,color:#000
     style D2 fill:#e0e7ff,stroke:#4f46e5,color:#000
-    style H2 fill:#fef3c7,stroke:#d97706,color:#000
+    style H2 fill:#ffffff,stroke:#d97706,color:#000
     style R2 fill:#e0e7ff,stroke:#4f46e5,color:#000
     style MAP fill:#dbeafe,stroke:#2563eb,color:#000
+    style read fill:#ffffff,stroke:#94a3b8,color:#000
+    style write fill:#ffffff,stroke:#94a3b8,color:#000
 ```
 
 **Read:** start at `map.md`, drill into `current.md`, branch out only as needed.  
